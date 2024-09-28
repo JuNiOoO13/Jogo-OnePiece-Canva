@@ -6,20 +6,99 @@
                     "StartPosX":9,
                     "StartPosY":20,
                     "Width":40,
-                    "Height":60,
+                    "Height":68,
                     "SpaceBetween":9,
                     "AnimationSpeed":1,
                     "QuantFrames":4
                 },
                 "StandL" :{
-                    "StartPosX":156,
+                    "StartPosX":9,
                     "StartPosY":105,
                     "Width":40,
-                    "Height":60,
+                    "Height":68,
                     "SpaceBetween":9,
                     "AnimationSpeed":1,
                     "QuantFrames":4
+                },
+                "WalkR":{
+                    "frames":[
+                            [245,26],
+                            [303,26],
+                            [362,26],
+                            [423,26],
+                            [483,26],
+                            [543,26],
+                            [608,26],
+                            [674,26]
+                    ],
+                    "StartPosX":245,
+                    "StartPosY":24,
+                    "Width":56,
+                    "Height":62,
+                    "SpaceBetween":9,
+                    "AnimationSpeed":1,
+                    "QuantFrames":8
+                },
+                "WalkL":{
+                    "frames":[
+                            [245,112],
+                            [303,112],
+                            [362,112],
+                            [423,112],
+                            [483,112],
+                            [543,112],
+                            [608,112],
+                            [674,112]
+                    ],
+                    "StartPosX":245,
+                    "StartPosY":112,
+                    "Width":56,
+                    "Height":62,
+                    "SpaceBetween":9,
+                    "AnimationSpeed":1,
+                    "QuantFrames":8
+                },
+                "Attack1R" :{
+                    "frames":[
+                        [9, 191],
+                        [71, 191],
+                        [138, 191],
+                        [197, 191],
+                        [292, 191],
+                        [388, 191],
+                        [482, 191],
+                        [576, 191], 
+                        [635, 191]
+                    ],
+                    "StartPosX":9,
+                    "StartPosY":191,
+                    "Width":85,
+                    "Height":72,
+                    "SpaceBetween":9,
+                    "AnimationSpeed":1,
+                    "QuantFrames":9
+                },
+                "Attack1L" :{
+                    "frames":[
+                        [9, 282],
+                        [71, 282],
+                        [138, 282],
+                        [197, 282],
+                        [292, 282],
+                        [388, 282],
+                        [482, 282],
+                        [576, 282], 
+                        [635, 282]
+                    ],
+                    "StartPosX":9,
+                    "StartPosY":282,
+                    "Width":85,
+                    "Height":72,
+                    "SpaceBetween":9,
+                    "AnimationSpeed":1,
+                    "QuantFrames":9
                 }
+
             }
     
         }
