@@ -1,0 +1,27 @@
+{
+    "CharConfigs":{
+        "Zoro":{
+            "actions" : {
+                "StandR" :{
+                    "StartPosX":9,
+                    "StartPosY":20,
+                    "Width":40,
+                    "Height":60,
+                    "SpaceBetween":9,
+                    "AnimationSpeed":1,
+                    "QuantFrames":4
+                },
+                "StandL" :{
+                    "StartPosX":156,
+                    "StartPosY":105,
+                    "Width":40,
+                    "Height":60,
+                    "SpaceBetween":9,
+                    "AnimationSpeed":1,
+                    "QuantFrames":4
+                }
+            }
+    
+        }
+    }
+}
