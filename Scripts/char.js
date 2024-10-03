@@ -1,79 +1,98 @@
+import utilits from "./utilits.js";
+
 export default class Char{
     
     constructor(nome, spritesUrl, configs,direction,screen){
         this.nome = nome;
         this.screen = screen;
-        this.anim = this._loadAllAnimations(configs['actions']);
+        this.currentFrame = 0;
+        this.anim = this._loadAllAnimations(nome,configs['Anim']);
+        this.animConfigs = configs['Anim'];
         this.direction = direction;
         this.currentSprite = 0;
-        this.currentAction = `Stand${this.direction}`;
+        this.currentAction = `idle`;
         this.posX = 0;
         this.posY = 0;
         this.loadFinish = false;
-        this.sprites = this._loadImage(spritesUrl);
         this.isWalking = false;
+        this.quantLoadImgs = 0;
         this.attacking = false;
-        this.frame = 0;
     }
-    _loadAllAnimations(configsAnim){
-        let keys = Object.keys(configsAnim);
-        keys.forEach((key) => {
-            if(!configsAnim[key].hasOwnProperty('frames'))
-                configsAnim[key]['frames'] = this._loadAnimation(configsAnim[key])
+    _loadAllAnimations(charName,configs){
+        let animNames = Object.keys(configs);
+        let allAnimations = new Object()
+        animNames.forEach(async (anim) =>  {
+            let directionAnim = new Object();
+            directionAnim['R'] = await this._loadAnimation(charName,anim,configs[anim],'R')
+            console.log(directionAnim['R'][0])
+            directionAnim['L'] = await this._loadAnimation(charName,anim,configs[anim],'L')
+            allAnimations[anim] = directionAnim;
         });
-        return configsAnim;
+        return allAnimations;
     }   
-    _loadAnimation(configAnim){
-        let frames = [];
-        let posX = configAnim.StartPosX;
-        let posY = configAnim.StartPosY;
-        for(let i = 0; i < configAnim.QuantFrames;i++){
-            frames.push([posX,posY]);
-                posX += (configAnim.Width + configAnim.SpaceBetween);
-        }
-        return frames;
-    }
-    _loadImage(spritesUrl){
-        this.screen.imageSmoothingEnabled = false;
+    _loadAnimation(charName,anim,config,direction){
+        let promises = [];
 
-        let sprites = new Image();
-        sprites.src = spritesUrl
-        sprites.onload = () => {
-            this.loadFinish = true;
+        for (let i = 0; i < config.QuantFrames; i++) {
+            let path = `Assets/${charName}/${anim}/${anim}${direction}_${i+1}.png`;
+
+            promises.push(new Promise((resolve, reject) => {
+                let sprite = new Image();
+                sprite.src = path;
+
+                sprite.onload = () => {
+                    resolve(sprite); 
+                };
+
+                sprite.onerror = (error) => {
+                    console.error(`Erro ao carregar a imagem: ${sprite.src}`, error);
+                    reject(error);
+                };
+            }));
         }
-        return sprites;
+
+    try {
+        return  Promise.all(promises);
+    } catch (error) {
+        console.error("Erro ao carregar uma ou mais imagens", error);
     }
+       
+    }
+
     
     _animate(){
-        this.screen.drawImage(this.sprites,
-            this.anim[this.currentAction].frames[this.currentSprite][0],
-            this.anim[this.currentAction].frames[this.currentSprite][1],
-            this.anim[this.currentAction].Width,
-            this.anim[this.currentAction].Height,
+        let atualImg = this.anim[this.currentAction][this.direction][this.currentSprite];
+        if(this.currentAction == 'attack1')
+            console.log(this.currentFrame * this.animConfigs[this.currentAction]['Velocity']);
+
+        this.screen.drawImage(atualImg,
             this.posX,
             this.posY,
-            this.anim[this.currentAction].Width * 2.5, 
-            this.anim[this.currentAction].Height * 2.5
+            atualImg.naturalWidth * 3,
+            atualImg.naturalHeight * 3
+            
         )
-        this.currentSprite = Math.floor(this.frame  / (59 / this.anim[this.currentAction].QuantFrames));
-        if(this.currentSprite > this.anim[this.currentAction].QuantFrames - 1){
+        this.currentSprite = Math.floor(this.currentFrame  / (59 * this.animConfigs[this.currentAction]['Velocity'] / this.animConfigs[this.currentAction].QuantFrames));
+        if(this.currentSprite > this.animConfigs[this.currentAction].QuantFrames - 1){
             this.currentSprite = 0;
             if(this.attacking){
                 this.attacking = false;
                 this.idle()
             }
         }
-        this.frame++;
-        if(this.frame >= 60){
-            this.frame = 0;
+
+        this.currentFrame++;
+        if(this.currentFrame > 59){
+            this.currentFrame = 0;
         }
+        
     }
 
     walk(direction){
         if(!this.isWalking){
             this.isWalking = true;
             this.direction = direction
-            this.currentAction = `Walk${direction}`;
+            this.currentAction = `walk`;
             this.currentSprite = 0;
         }
         
@@ -81,20 +100,21 @@ export default class Char{
 
     idle(){
         if(!this.attacking){
-            this.currentAction = `Stand${this.direction}`;
+            this.currentAction = `idle`;
             this.currentSprite = 0;
             this.isWalking = false;
         }
     }
     attack1(){
-        this.currentAction = `Attack1${this.direction}`;
+        this.currentAction = `attack1`;
         this.currentSprite = 0;
         this.isWalking = false;
         this.attacking = true;
+        this.currentFrame = 0;
     }
 
-    draw(){
-        if(this.loadFinish)
-           this._animate();
+    draw(frame){
+        // if(this.quantLoadImgs >=42)
+           this._animate(frame);
     }
 }
