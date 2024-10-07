@@ -11,7 +11,7 @@ function _createCtx(){
 let anim = await utilits.loadCharConfigs("Zoro")
 let ctx = _createCtx();
 let velocity = 0;
-let gravityForce = 5;
+let gravityForce = 10;
 let inputsPlayer = {
     'd' : () =>{
         if(!mainChar.attacking){
@@ -29,8 +29,17 @@ let inputsPlayer = {
         if(!mainChar.attacking)
             mainChar.attack1();
     },
+    'g': () => {
+        if(!mainChar.attacking)
+            mainChar.attack2();
+    },
+    'e': () => {
+        if(!mainChar.attacking)
+            mainChar.attack3();
+    },
     'w':() =>{
-        mainChar.posY -= 240;
+        gravityForce = 10;
+        mainChar.jump();
     }
 }
 let keys = Object.keys(inputsPlayer)
@@ -44,7 +53,7 @@ ctx.mozImageSmoothingEnabled = false;
 ctx.webkitImageSmoothingEnabled = false; 
 ctx.msImageSmoothingEnabled = false; 
 
-let mainChar = new Char("Zoro", "/Assets/ZoroSprites.png", anim,"R",ctx);
+let mainChar = new Char("Zoro", "/Assets/ZoroSprites.png", anim,"R",ctx,canva.height);
 mainChar.posY = canva.height / 2
 
 async function loadGameAssets(){
@@ -83,12 +92,17 @@ function mainLoop(){
 }
 
 function gravity(){
-    if(mainChar.posY <= canva.height / 2){
-        mainChar.posY += gravityForce
-        gravityForce += 1;
-
+    if(mainChar.acceleration > 0){
+        mainChar.posY -= mainChar.acceleration * 0.10;
+        mainChar.acceleration = mainChar.acceleration - mainChar.jumpForce * 0.10 > 0 ? mainChar.acceleration - mainChar.jumpForce * 0.10 : 0; 
+    }
+    if(mainChar.posY >= canva.height / 2){
+        mainChar.posY = canva.height / 2;
+        gravityForce = 0.2;
     }else{
-        gravityForce = 5
+        mainChar.posY += gravityForce
+        gravityForce += 0.5;
+
     }
 }
 
@@ -115,8 +129,9 @@ document.addEventListener('keyup', (event) =>{
     }
 });
 // setInterval(() => {
-//     mainLoopLogics()
-//  },250);
+//     gravity();
+//  },60);
+
 
 setInterval(() => {
    mainLoop()

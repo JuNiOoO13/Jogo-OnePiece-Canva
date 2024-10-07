@@ -2,9 +2,10 @@ import utilits from "./utilits.js";
 
 export default class Char{
     
-    constructor(nome, spritesUrl, configs,direction,screen){
+    constructor(nome, spritesUrl, configs,direction,screen,heightCanva){
         this.nome = nome;
         this.screen = screen;
+        this.groundPos = heightCanva / 2;
         this.currentFrame = 0;
         this.anim = this._loadAllAnimations(nome,configs['Anim']);
         this.animConfigs = configs['Anim'];
@@ -15,8 +16,12 @@ export default class Char{
         this.posY = 0;
         this.loadFinish = false;
         this.isWalking = false;
+        this.jumping = false;
         this.quantLoadImgs = 0;
         this.attacking = false;
+        this.jumpForce = 800;
+        this.acceleration = 0;
+        this.maxJumpPoint = false;
     }
     _loadAllAnimations(charName,configs){
         let animNames = Object.keys(configs);
@@ -24,7 +29,6 @@ export default class Char{
         animNames.forEach(async (anim) =>  {
             let directionAnim = new Object();
             directionAnim['R'] = await this._loadAnimation(charName,anim,configs[anim],'R')
-            console.log(directionAnim['R'][0])
             directionAnim['L'] = await this._loadAnimation(charName,anim,configs[anim],'L')
             allAnimations[anim] = directionAnim;
         });
@@ -61,10 +65,22 @@ export default class Char{
 
     
     _animate(){
-        let atualImg = this.anim[this.currentAction][this.direction][this.currentSprite];
-        if(this.currentAction == 'attack1')
-            console.log(this.currentFrame * this.animConfigs[this.currentAction]['Velocity']);
+        console.log(this.currentAction);
+        if(this.posY < this.groundPos){
+            if(this.acceleration == 0 && !this.maxJumpPoint){
+                this.currentAction = 'jump-max';
+                this.maxJumpPoint = true;
+            }else if(this.acceleration > 0){
+                this.jumping = true;
+                this.currentAction = 'jump';
+            }else{
+                this.currentAction = 'air-down';
+            }
+        }else if(this.jumping){
+            this.currentAction = 'air-end';
 
+        }
+        let atualImg = this.anim[this.currentAction][this.direction][this.currentSprite];
         this.screen.drawImage(atualImg,
             this.posX,
             this.posY,
@@ -72,12 +88,26 @@ export default class Char{
             atualImg.naturalHeight * 3
             
         )
+        if(this.animConfigs[this.currentAction]['mov']){
+            let movTo;
+            if(this.direction == 'L')
+                movTo = this.animConfigs[this.currentAction]['pos'][this.currentSprite][0] * -1;
+            else
+                movTo = this.animConfigs[this.currentAction]['pos'][this.currentSprite][0];
+
+            this.posX += movTo;
+            this.posY += this.animConfigs[this.currentAction]['pos'][this.currentSprite][1]
+        }
         this.currentSprite = Math.floor(this.currentFrame  / (59 * this.animConfigs[this.currentAction]['Velocity'] / this.animConfigs[this.currentAction].QuantFrames));
         if(this.currentSprite > this.animConfigs[this.currentAction].QuantFrames - 1){
             this.currentSprite = 0;
             if(this.attacking){
                 this.attacking = false;
                 this.idle()
+            }
+            if(this.jumping && this.currentAction == 'air-end'){
+                this.jumping = false;
+                this.idle();
             }
         }
 
@@ -113,8 +143,28 @@ export default class Char{
         this.currentFrame = 0;
     }
 
+    attack2(){
+        this.currentAction = `attack2`;
+        this.currentSprite = 0;
+        this.isWalking = false;
+        this.attacking = true;
+        this.currentFrame = 0;
+    }
+
+    attack3(){
+        this.currentAction = `attack3`;
+        this.currentSprite = 0;
+        this.isWalking = false;
+        this.attacking = true;
+        this.currentFrame = 0;
+    }
+    jump(){
+        this.currentFrame = 0;
+        this.acceleration = this.jumpForce;
+        this.maxJumpPoint = false;
+    }
+
     draw(frame){
-        // if(this.quantLoadImgs >=42)
-           this._animate(frame);
+        this._animate(frame);
     }
 }

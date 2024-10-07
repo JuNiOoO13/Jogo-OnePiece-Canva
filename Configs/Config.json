@@ -3,17 +3,65 @@
         "Zoro":{
             "Anim":{
                 "idle":{
+                    "mov":false,
                     "QuantFrames":4,
                     "Velocity":1
                 },
                 "walk":{
+                    "mov":false,
                     "QuantFrames":8,
                     "Velocity":1
                 },
                 "attack1":{
+                    "mov":false,
                     "QuantFrames":9,
                     "Velocity":0.6
+                },
+                "attack2":{
+                    "mov":true,
+                    "QuantFrames":12,
+                    "Velocity":1,
+                    "pos":[
+                        [7,0],
+                        [8,0],
+                        [10,0],
+                        [10,0],
+                        [10,0],
+                        [10,0],
+                        [10,0],
+                        [10,0],
+                        [9,0],
+                        [8,0],
+                        [7,0],
+                        [6,0]
+                    ]
+                },
+                "attack3":{
+                    "mov":false,
+                    "QuantFrames":9,
+                    "Velocity":1
+                },
+                "jump":{
+                    "mov":false,
+                    "QuantFrames":2,
+                    "Velocity":1
+                },
+                "air-end":{
+                    "mov":false,
+                    "QuantFrames":2,
+                    "Velocity":0.6
+                },
+                "air-down":{
+                    "mov":false,
+                    "QuantFrames":2,
+                    "Velocity":1
+                },
+                "jump-max":{
+                    "mov":false,
+                    "QuantFrames":1,
+                    "Velocity":1
                 }
+                
             }
         }
     }
