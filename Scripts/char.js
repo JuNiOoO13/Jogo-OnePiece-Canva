@@ -65,7 +65,6 @@ export default class Char{
 
     
     _animate(){
-        console.log(this.currentAction);
         if(this.posY < this.groundPos){
             if(this.acceleration == 0 && !this.maxJumpPoint){
                 this.currentAction = 'jump-max';
